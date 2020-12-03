@@ -1,7 +1,7 @@
 use std::fs;
 use regex::Regex;
 
-fn part1(input: &Vec<&str>) -> i32 {
+fn part1(input: &[&str]) -> i32 {
     let mut num = 0;
     let p = Regex::new(r"(?P<min>[0-9]+)-(?P<max>[0-9]+) (?P<letter>[a-z]): (?P<pw>[a-z]+)").unwrap();
     for line in input.iter() {
@@ -18,7 +18,7 @@ fn part1(input: &Vec<&str>) -> i32 {
     return num;
 }
 
-fn part2(input: &Vec<&str>) -> i32 {
+fn part2(input: &[&str]) -> i32 {
     let mut num = 0;
     let p = Regex::new(r"(?P<min>[0-9]+)-(?P<max>[0-9]+) (?P<letter>[a-z]): (?P<pw>[a-z]+)").unwrap();
     for line in input.iter() {
@@ -34,7 +34,7 @@ fn part2(input: &Vec<&str>) -> i32 {
     return num;
 }
 
-fn runner(func: &dyn Fn(&Vec<&str>) -> i32, sample: &Vec<&str>, expected: i32, input: &Vec<&str>, answer: Option<i32>) {
+fn runner(func: &dyn Fn(&[&str]) -> i32, sample: &[&str], expected: i32, input: &[&str], answer: Option<i32>) {
     assert_eq!(func(sample), expected);
     let ans = func(input);
     println!("{}", ans);
@@ -47,7 +47,7 @@ fn runner(func: &dyn Fn(&Vec<&str>) -> i32, sample: &Vec<&str>, expected: i32, i
 }
 
 pub fn day2() {
-    let sample = ["1-3 a: abcde", "1-3 b: cdefgn", "2-9 c: ccccccccc"].to_vec();
+    let sample = ["1-3 a: abcde", "1-3 b: cdefgn", "2-9 c: ccccccccc"];
     let contents = fs::read_to_string("day2.txt").unwrap();
     let input: Vec<&str> = contents.lines().collect();
     runner(&part1, &sample, 2, &input, Some(550));
