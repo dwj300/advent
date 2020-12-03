@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import re
+from utils import runner
 
 def part1(lines):
     num = 0
@@ -24,16 +25,9 @@ def part2(lines):
             num += 1
     return num
 
-def runner(func, sample, expected, input, answer=None):
-    assert func(sample) == expected
-    print(func(input))
-    if answer:
-        assert func(input) == answer
-
 if __name__ == "__main__":
     sample = ["1-3 a: abcde", "1-3 b: cdefgn", "2-9 c: ccccccccc"]
     with open("day2.txt") as f:
         lines = f.readlines()
     runner(part1, sample, 2, lines, 550)
     runner(part2, sample, 1, lines, 634)
-    
