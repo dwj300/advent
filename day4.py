@@ -26,14 +26,14 @@ def part2(lines):
                                              (v[-2:] == 'in' and v[:-2].isnumeric and int(v[:-2]) >= 59 and int(v[:-2]) <= 76)),
             'hcl': lambda v: hcl_p.match(v),
             'ecl': lambda v: v in 'amb blu brn gry grn hzl oth'.split(' '),
-            'pid': lambda v: pid_p.match(v)}
+            'pid': lambda v: pid_p.match(v),
+            'cid': lambda v: False}
 
     count = 0
     current = {}
     for line in lines:
         if line == "":
-            correct = 0
-            if len(list(filter(lambda pair: pair[0] in rules and rules[pair[0]](pair[1]), [(k, v) for k, v in current.items()]))) == 7:
+            if len(list(filter(lambda t: rules[t[0]](t[1]), current.items()))) == 7:
                 count +=  1
             current = {}
         else:
