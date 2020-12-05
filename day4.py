@@ -37,8 +37,7 @@ def part2(lines):
                 count +=  1
             current = {}
         else:
-            pairs = line.split(" ")
-            for pair in pairs:
+            for pair in line.split(" "):
                 parts = pair.split(':')
                 current[parts[0]] = parts[1]
     return count
