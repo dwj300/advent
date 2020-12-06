@@ -21,7 +21,6 @@ def part2(lines):
     for line in lines:
         line = line.strip()
         if line == "":
-            print(group)
             n = 0
             for k,v in group.items():
                 if v == count:

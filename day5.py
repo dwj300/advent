@@ -1,20 +1,16 @@
 #!/usr/bin/env python3
 
-def seat(line):
-    r = [0,127]
-    for l in line[:7]:
-        if l == 'F':
+def split(line, r, target, u, j):
+    for l in line:
+        if l == target:
             r[1] = ((r[1] - r[0]) // 2) + r[0]
         else:
             r[0] = round((r[1] - r[0]) / 2) + r[0]
-    row = r[0] if line[7] == 'F' else r[1]
-    c = [0,7]
-    for l in line[7:10]:
-        if l == 'L':
-            c[1] = ((c[1] - c[0]) // 2) + c[0]
-        else:
-            c[0] = round((c[1] - c[0]) / 2) + c[0]
-    col = c[0] if line[9] == 'L' else c[1]
+    return  r[0] if line[7] == target else r[1]
+
+def seat(line):
+    row = split(line, [0, 127], 'F', 0, 7)
+    col = split(line, [0, 7], 'L', 7, 9)
     return row * 8 + col
 
 def part1(lines):
@@ -30,5 +26,9 @@ if __name__ == "__main__":
         lines = [line.strip() for line in f.readlines()]
 
     assert seat("FBFBBFFRLR") == 357
-    print(part1(lines))
-    print(part2(lines))
+    ans1 = part1(lines)
+    print(ans1)
+    assert ans1 == 6714
+    ans2 = part2(lines)
+    print(ans2)
+    assert ans2 == 3435
