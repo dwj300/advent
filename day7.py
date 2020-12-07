@@ -10,17 +10,15 @@ def parse(lines):
 
         parts = line.split(" bags contain ")
         src = parts[0]
-        if "contain no other bags" in line:
-            rules[src] = []
-        else:
-            targets = []
+        targets = []
+        if "contain no other bags" not in line:
             for part in parts[1].split(','):
                 combo = part.strip().split(" bag")[0]
                 g = p.match(combo).groups()
                 num = int(g[0])
                 name = g[1]
                 targets.append((num, name))
-            rules[src] = targets
+        rules[src] = targets
     return rules
 
 def part1(lines):
@@ -34,7 +32,7 @@ def part1(lines):
         for s in rules[start]:
             s = s[1]
             if search(s, rules, seen):
-                return s
+                return True
         return False
 
     rules = parse(lines)
