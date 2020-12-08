@@ -8,13 +8,9 @@ def part1(lines):
     i = 0
     while i not in seen:
         seen.add(i)
-        line = lines[i]
-        parts = line.split(' ')
+        parts = lines[i].split(' ')
         if parts[0] == "acc":
             a += int(parts[1])
-            i += 1
-        elif parts[0] == "nop":
-            i += 1
         elif parts[0] == "jmp":
             i += int(parts[1])-1
         i += 1
@@ -29,24 +25,20 @@ def part2(lines):
             i = 0
             while i not in seen and i != len(lines)-1:
                 seen.add(i)
-                line = lines[i]
-                parts = line.split(' ')
+                parts = lines[i].split(' ')
                 if i == j and inst == parts[0]:
-                    if inst == "nop":
-                        parts[0] = "jmp"
-                    else:
-                        parts[0] = "nop"
+                    print(lines[i])
+                    parts[0] = "jmp" if inst == "nop" else "nop"
                 if parts[0] == "acc":
                     a += int(parts[1])
-                    i += 1
-                elif parts[0] == "nop":
-                    i += 1
                 elif parts[0] == "jmp":
-                    i += int(parts[1])
+                    i += int(parts[1])-1
+                i += 1
             if i == len(lines) - 1:
+                print("J:", j)
+                print("inst:", inst)
                 return a
-    return a
-
+    return -1
 
 
 if __name__ == "__main__":
@@ -66,8 +58,9 @@ acc +6
     assert part1(sample1) == 5
     ans1 = part1(problem)
     print(ans1)
+    assert ans1 == 1179
 
     assert part2(sample1) == 8
     ans2 = part2(problem)
     print(ans2)
-
+    assert ans2 == 1089
