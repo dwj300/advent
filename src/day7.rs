@@ -13,8 +13,7 @@ fn parse<'a>(lines: &[&'a str]) -> HashMap<&'a str, Vec<(i32, &'a str)>> {
         let src: &str = parts.get(0).unwrap().trim();
         let mut targets: Vec<(i32, &str)> = Vec::new();
         if !line.contains("contain no other bags") {
-            let second = parts.get(1).unwrap();
-            for part in second.split(',') {
+            for part in parts.get(1).unwrap().split(',') {
                 let combo = part.trim().split(" bag").nth(0).unwrap();
                 let g = p.captures(combo).unwrap();
                 let num = g.get(1).unwrap().as_str().parse::<i32>().unwrap();
@@ -27,44 +26,28 @@ fn parse<'a>(lines: &[&'a str]) -> HashMap<&'a str, Vec<(i32, &'a str)>> {
     return rules;
 }
 
-fn search<'a>(start: &'a str, rules: &HashMap<&str, Vec<(i32, &str)>>, seen: HashSet<&'a str>) -> bool {
+fn search<'a>(start: &'a str, rules: &HashMap<&str, Vec<(i32, &str)>>, mut seen: HashSet<&'a str>) -> bool {
     if start == "shiny gold"{
         return true;
     }
     if seen.contains(start) || !rules.contains_key(start) || (rules.contains_key(start) && rules.get(start).unwrap().len() == 0) {
         return false;
     }
-    let mut seen2 = seen.clone();
-    seen2.insert(start);
-    for s in rules.get(start).unwrap() {
-        let t = s.1;
-        if search(t, rules, seen2.clone()) {
-            return true;
-        }
-    }
-    return false;
+    seen.insert(start);
+    return rules.get(start).unwrap().iter().any(|s| search(s.1, rules, seen.clone()));
+
 }
 
 fn recurse(k: &str, rules: &HashMap<&str, Vec<(i32, &str)>>) -> i32 {
     if rules.contains_key(k) && rules.get(k).unwrap().len() == 0 {
         return 0;
     }
-    let mut sum = 0;
-    for rule in rules.get(k).unwrap() {
-        sum += rule.0 + rule.0 * recurse(rule.1, rules);
-    }
-    return sum;
+    return rules.get(k).unwrap().iter().map(|rule| rule.0 + rule.0 * recurse(rule.1, rules)).sum()
 }
 
-fn part1(lines: &[&str]) -> i32 {
+fn part1(lines: &[&str]) -> usize {
     let rules = parse(lines);
-    let mut count = 0;
-    for key in rules.keys() {
-        if *key != "shiny gold" && search(key, &rules, HashSet::new()) {
-            count += 1;
-        }
-    }
-    return count;
+    return rules.keys().map(|key| *key != "shiny gold" && search(key, &rules, HashSet::new())).filter(|x| *x).count();
 }
 
 fn part2(lines: &[&str]) -> i32 {

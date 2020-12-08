@@ -23,20 +23,17 @@ def part2(lines):
             a = 0
             seen = set()
             i = 0
-            while i not in seen and i != len(lines)-1:
+            while i not in seen and i != len(lines):
                 seen.add(i)
                 parts = lines[i].split(' ')
                 if i == j and inst == parts[0]:
-                    print(lines[i])
                     parts[0] = "jmp" if inst == "nop" else "nop"
                 if parts[0] == "acc":
                     a += int(parts[1])
                 elif parts[0] == "jmp":
                     i += int(parts[1])-1
                 i += 1
-            if i == len(lines) - 1:
-                print("J:", j)
-                print("inst:", inst)
+            if i == len(lines):
                 return a
     return -1
 

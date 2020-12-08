@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import re
 
+
 def parse(lines):
     p = re.compile("([0-9]+) ([a-z ]+)")
     rules = {}
@@ -20,6 +21,7 @@ def parse(lines):
                 targets.append((num, name))
         rules[src] = targets
     return rules
+
 
 def part1(lines):
     def search(start, rules, seen):
@@ -48,6 +50,7 @@ def part2(lines):
         return sum(map(lambda x: x[0] + x[0] * recurse(x[1]), rules[k]))
 
     return recurse('shiny gold')
+
 
 if __name__ == "__main__":
     with open("day7.txt") as f:

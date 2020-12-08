@@ -8,9 +8,8 @@ fn part1(input: &[i32]) -> i32 {
     }
 
     for i in input {
-        match partials.get(i) {
-            Some(partial) => return partial * i,
-            _ => ()
+        if let Some(partial) = partials.get(i) {
+            return partial * i;
         }
     }
     return -1;

@@ -6,8 +6,8 @@ fn part1(input: &[&str]) -> i32 {
     let p = Regex::new(r"(?P<min>[0-9]+)-(?P<max>[0-9]+) (?P<letter>[a-z]): (?P<pw>[a-z]+)").unwrap();
     for line in input.iter() {
         let caps = p.captures(line).unwrap();
-        let min: usize = caps.name("min").unwrap().as_str().parse().unwrap_or(0);
-        let max: usize = caps.name("max").unwrap().as_str().parse().unwrap_or(0);
+        let min: usize = caps.name("min").unwrap().as_str().parse().unwrap();
+        let max: usize = caps.name("max").unwrap().as_str().parse().unwrap();
         let letter: char = caps.name("letter").unwrap().as_str().chars().next().unwrap();
         let pw: &str = caps.name("pw").unwrap().as_str();
         let count = pw.matches(|c| c == letter).count();
@@ -23,8 +23,8 @@ fn part2(input: &[&str]) -> i32 {
     let p = Regex::new(r"(?P<min>[0-9]+)-(?P<max>[0-9]+) (?P<letter>[a-z]): (?P<pw>[a-z]+)").unwrap();
     for line in input.iter() {
         let caps = p.captures(line).unwrap();
-        let min: usize = caps.name("min").unwrap().as_str().parse().unwrap_or(0)-1;
-        let max: usize = caps.name("max").unwrap().as_str().parse().unwrap_or(0)-1;
+        let min: usize = caps.name("min").unwrap().as_str().parse::<usize>().unwrap()-1;
+        let max: usize = caps.name("max").unwrap().as_str().parse::<usize>().unwrap()-1;
         let letter: char = caps.name("letter").unwrap().as_str().chars().next().unwrap();
         let pw: Vec<char> = caps.name("pw").unwrap().as_str().chars().collect();
         if (pw[min] == letter && pw[max] != letter) || (pw[min] != letter && pw[max] == letter) {
