@@ -15,7 +15,7 @@ fn part1(lines: &[&str]) -> i32 {
             }
         }
     }
-    return groups.iter().sum();
+    groups.iter().sum()
 }
 
 fn part2(lines: &[&str]) -> i32 {
@@ -42,7 +42,7 @@ fn part2(lines: &[&str]) -> i32 {
             count += 1;
         }
     }
-    return groups.iter().sum();
+    groups.iter().sum()
 }
 
 pub fn day6() {

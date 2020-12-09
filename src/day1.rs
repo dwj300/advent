@@ -12,7 +12,7 @@ fn part1(input: &[i32]) -> i32 {
             return partial * i;
         }
     }
-    return -1;
+    -1
 }
 
 fn part2(input: &[i32]) -> i32 {
@@ -26,24 +26,20 @@ fn part2(input: &[i32]) -> i32 {
             if i == j {
                 continue;
             }
-            match partials.get(&(input[i] + input[j])) {
-                Some(partial) => return partial * input[i] * input[j],
-                _ => ()
+            if let Some(partial) = partials.get(&(input[i] + input[j])) {
+                return partial * input[i] * input[j]
             }
         }
     }
-    return -1;
+    -1
 }
 
 fn runner(func: &dyn Fn(&[i32]) -> i32, sample: &[i32], expected: i32, input: &[i32], answer: Option<i32>) {
     assert_eq!(func(sample), expected);
     let ans = func(input);
     println!("{}", ans);
-    match answer {
-        Some(x) => {
-            assert_eq!(ans, x);
-        },
-        None => ()
+    if let Some(x) = answer {
+        assert_eq!(ans, x);
     }
 }
 

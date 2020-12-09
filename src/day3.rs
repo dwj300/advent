@@ -5,17 +5,17 @@ fn helper(lines: &[&str], dx: usize, dy: usize) -> i32 {
     let mut y = 0;
     let mut count = 0;
     while y < lines.len()-1 {
-        x = x + dx;
-        y = y + dy;
+        x += dx;
+        y += dy;
         if lines[y].chars().nth(x % lines[0].len()).unwrap() == '#' {
             count += 1
         }
     }
-    return count;
+    count
 }
 
 fn part1(input: &[&str]) -> i32 {
-    return helper(input, 3, 1);
+    helper(input, 3, 1)
 }
 
 fn part2(input: &[&str]) -> i32 {
@@ -24,18 +24,15 @@ fn part2(input: &[&str]) -> i32 {
     for slope in slopes.iter() {
         product *= helper(input, slope[0], slope[1]);
     }
-    return product;
+    product
 }
 
 fn runner(func: &dyn Fn(&[&str]) -> i32, sample: &[&str], expected: i32, input: &[&str], answer: Option<i32>) {
     assert_eq!(func(sample), expected);
     let ans = func(input);
     println!("{}", ans);
-    match answer {
-        Some(x) => {
-            assert_eq!(ans, x);
-        },
-        None => ()
+    if let Some(x) = answer {
+        assert_eq!(ans, x);
     }
 }
 

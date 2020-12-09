@@ -15,7 +15,7 @@ fn part1(input: &[&str]) -> i32 {
             num += 1;
         }
     }
-    return num;
+    num
 }
 
 fn part2(input: &[&str]) -> i32 {
@@ -31,18 +31,15 @@ fn part2(input: &[&str]) -> i32 {
             num += 1;
         }
     }
-    return num;
+    num
 }
 
 fn runner(func: &dyn Fn(&[&str]) -> i32, sample: &[&str], expected: i32, input: &[&str], answer: Option<i32>) {
     assert_eq!(func(sample), expected);
     let ans = func(input);
     println!("{}", ans);
-    match answer {
-        Some(x) => {
-            assert_eq!(ans, x);
-        },
-        None => ()
+    if let Some(x) = answer {
+        assert_eq!(ans, x);
     }
 }
 

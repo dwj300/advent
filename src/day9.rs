@@ -4,7 +4,7 @@ use std::iter::FromIterator;
 
 fn check(nums: &[i32], target: i32) -> bool {
     let diff: HashMap<i32, usize> = HashMap::from_iter(nums.iter().enumerate().map(|(i,n)| (target-n,i)));
-    return nums.iter().enumerate().any(|(j,n)| diff.contains_key(n) && *(diff.get(n).unwrap()) != j);
+    nums.iter().enumerate().any(|(j,n)| diff.contains_key(n) && *(diff.get(n).unwrap()) != j)
 }
 
 fn part1(nums: &[i32], pre: usize) -> i32 {
@@ -13,7 +13,7 @@ fn part1(nums: &[i32], pre: usize) -> i32 {
             return nums[i];
         }
     }
-    return -1;
+    -1
 }
 
 fn part2(nums: &[i32], target: i32) -> i32 {
@@ -28,7 +28,7 @@ fn part2(nums: &[i32], target: i32) -> i32 {
             i += 1;
         }
     }
-    return nums[i..j+1].iter().min().unwrap() + nums[i..j+1].iter().max().unwrap();
+    nums[i..j+1].iter().min().unwrap() + nums[i..j+1].iter().max().unwrap()
 }
 
 pub fn day9() {

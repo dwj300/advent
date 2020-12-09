@@ -7,7 +7,7 @@ fn part1(lines: &[&str]) -> i32 {
     let mut i = 0;
     while !seen.contains(&i) {
         seen.insert(i);
-        let parts: Vec<&str> = lines[i as usize].split(" ").collect();
+        let parts: Vec<&str> = lines[i as usize].split(' ').collect();
         let delta = parts[1].parse::<i32>().unwrap();
         if parts[0] == "acc" {
             a += delta;
@@ -17,7 +17,7 @@ fn part1(lines: &[&str]) -> i32 {
         }
         i += 1;
     }
-    return a;
+    a
 }
 
 fn part2(lines: &[&str]) -> i32 {
@@ -28,7 +28,7 @@ fn part2(lines: &[&str]) -> i32 {
             let mut i: i32 = 0;
             while !seen.contains(&i) && i != lines.len() as i32 {
                 seen.insert(i);
-                let mut parts: Vec<&str> = lines[i as usize].split(" ").collect();
+                let mut parts: Vec<&str> = lines[i as usize].split(' ').collect();
                 if i == j as i32 && *inst == parts[0] {
                     parts[0] = if *inst == "nop" {"jmp"} else {"nop"};
                 }
@@ -45,7 +45,7 @@ fn part2(lines: &[&str]) -> i32 {
             }
         }
     }
-    return 0;
+    0
 }
 
 pub fn day8() {

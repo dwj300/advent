@@ -8,19 +8,19 @@ fn part1(lines: &[&str]) -> i32 {
     let mut count = 0;
     let mut current = HashSet::new();
     for line in lines {
-        if line.len() == 0 {
+        if line.is_empty() {
             if current.is_superset(&keys) {
                 count += 1;
             }
             current = HashSet::new();
         }
         else {
-            for pair in line.split(" ") {
-                current.insert(pair.split(':').nth(0).unwrap());
+            for pair in line.split(' ') {
+                current.insert(pair.split(':').next().unwrap());
             }
         }
     }
-    return count;
+    count
 }
 
 fn part2(lines: &[&str]) -> i32 {
@@ -29,7 +29,7 @@ fn part2(lines: &[&str]) -> i32 {
     let mut count = 0;
     let mut current: HashMap<&str, &str> = HashMap::new();
     for line in lines {
-        if line.len() == 0 {
+        if line.is_empty() {
             let mut n = 0;
             for (k, v) in current {
                 match k {
@@ -56,25 +56,23 @@ fn part2(lines: &[&str]) -> i32 {
             current = HashMap::new();
         }
         else {
-            for pair in line.split(" ") {
-                let k = pair.split(':').nth(0).unwrap();
+            for pair in line.split(' ') {
+                let k = pair.split(':').next().unwrap();
                 let v = pair.split(':').nth(1).unwrap();
                 current.insert(k, v);
             }
         }
     }
-    return count;
+    count
 }
 
 fn runner(func: &dyn Fn(&[&str]) -> i32, sample: &[&str], expected: i32, input: &[&str], answer: Option<i32>) {
     assert_eq!(func(sample), expected);
     let ans = func(input);
     println!("{}", ans);
-    match answer {
-        Some(x) => {
-            assert_eq!(ans, x);
-        },
-        None => ()
+
+    if let Some(x) = answer {
+        assert_eq!(ans, x);
     }
 }
 
