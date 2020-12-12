@@ -10,12 +10,10 @@ def occupied(seats, r, c, search):
             rr = r + i
             cc = c + j
             if search:
-                while 0 <= rr <= len(seats) or cc >= len(seats[0])) and seats[rr][cc] == '.':
+                while 0 <= rr < len(seats) and 0 <= cc < len(seats[0]) and seats[rr][cc] == '.':
                     rr += i
                     cc += j
-            if rr < 0 or cc < 0 or rr >= len(seats) or cc >= len(seats[0]):
-                continue
-            if seats[rr][cc] == '#':
+            if 0 <= rr < len(seats) and 0 <= cc < len(seats[0]) and seats[rr][cc] == '#':
                 count += 1
     return count
 
