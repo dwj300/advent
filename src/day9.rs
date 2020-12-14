@@ -56,7 +56,6 @@ pub fn day9() {
 
     let contents = fs::read_to_string("day9.txt").unwrap();
     let input: Vec<i32> = contents.lines().flat_map(|x| x.parse::<i32>()).collect();
-    println!("len{}", input.len());
     let ans1 = part1(&input, 25);
     println!("{}", ans1);
     assert_eq!(ans1, 27911108);
