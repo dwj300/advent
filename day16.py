@@ -1,41 +1,44 @@
 #!/usr/bin/env python3
+from functools import reduce
 
+def is_valid(ticket, rules):
+    for val in ticket:
+        found = False
+        for ranges in rules.values():
+            for r in ranges:
+                if val >= r[0] and val <= r[1]:
+                    found = True
+                    break
+        if not found:
+            return val
+    return None
 
 def part1(lines):
     rules = {}
-    for line in lines:
-        line = line.strip()
-        if len(line) == 0:
-            break
-        parts = line.split(':')
+    i = 0
+    while i < len(lines) and len(lines[i]) > 0:
+        parts = lines[i].split(':')
         ranges_str = parts[1].split(' or ')
         rules[parts[0]] = []
         for r in ranges_str:
             start,end = [int(x) for x in r.split('-')]
             rules[parts[0]].append((start, end))
+        i += 1
+    i += 5
 
     s = 0
-    start = False
-    for line in lines:
-        if "nearby tickets" in line:
-            start = True
-            continue
-        if start:
-            for val in [int(x) for x in line.strip().split(',')]:
-                found = False
-                v = 0
-                for ranges in rules.values():
-                    for r in ranges:
-                        if val >= r[0] and val <= r[1]:
-                            found = True
-                if not found:
-                    s += val
+    while i < len(lines):
+        v = is_valid([int(x) for x in lines[i].strip().split(',')], rules)
+        if v != None:
+            s += v
+        i += 1
     return s
 
 def part2(lines):
     rules = {}
-    for line in lines:
-        line = line.strip()
+    i = 0
+    while i < len(lines):
+        line = lines[i].strip()
         if len(line) == 0:
             break
         parts = line.split(':')
@@ -44,41 +47,26 @@ def part2(lines):
         for r in ranges_str:
             start,end = [int(x) for x in r.split('-')]
             rules[parts[0]].append((start, end))
+        i += 1
 
-    tickets = []
     fields = {}
-    start = False
     my = ""
 
-    for line in lines:
-        if my is None:
-            my = line
-        if "your ticket" in line:
-            my = None
-            continue
-        if "nearby tickets" in line:
-            start = True
-            continue
-        if start:
-            valid = True
-            for val in [int(x) for x in line.strip().split(',')]:
-                found = False
-                v = 0
-                for ranges in rules.values():
-                    for r in ranges:
-                        if val >= r[0] and val <= r[1]:
-                            found = True
-                if not found:
-                    valid = False
-            if valid:
-                ticket = [int(x) for x in line.strip().split(',')]
-                tickets.append(ticket)
-                for i,x in enumerate(ticket):
-                    if i in fields:
-                        fields[i].append(x)
-                    else:
-                        fields[i] = [x]
-                #print(line)
+    while i < len(lines) and "nearby tickets" not in lines[i]:
+        if "your ticket" in lines[i]:
+            i += 1
+            my = [int(x) for x in lines[i].strip().split(',')]
+        i += 1
+    i += 1
+    while i < len(lines):
+        ticket = [int(x) for x in lines[i].strip().split(',')]
+        if is_valid(ticket, rules) == None:
+            for j,x in enumerate(ticket):
+                if j in fields:
+                    fields[j].append(x)
+                else:
+                    fields[j] = [x]
+        i += 1
 
     mapping = {}
     for i, field in fields.items():
@@ -103,29 +91,14 @@ def part2(lines):
             for v in final_mapping.values():
                 if v in poss:
                     poss.remove(v)
+
             if len(poss) == 1:
                 final_mapping[i] = poss[0]
                 del mapping[i]
                 break
 
-    print(mapping)
-    print(final_mapping)
-
-
-    print(tickets)
-    print(fields)
-    print(my)
-
     s = 1
-    my = [int(x) for x in my.strip().split(',')]
-    for i,j in final_mapping.items():
-        print(i)
-        if "departure" in i:
-            s *= my[j]
-
-
-    print(s)
-    return s
+    return reduce(lambda x,y: x*y, [my[v] for k,v in final_mapping.items() if "departure" in k])
 
 
 if __name__ == "__main__":
@@ -145,26 +118,11 @@ nearby tickets:
 55,2,20
 38,6,12""".split('\n')
 
-    sample2 = """class: 0-1 or 4-19
-row: 0-5 or 8-19
-seat: 0-13 or 16-19
-
-your ticket:
-11,12,13
-
-nearby tickets:
-3,9,18
-15,1,5
-5,14,9""".split('\n')
-    #sample = [0,3,6]
-    #   problem = [0,8,15,2,12,1,4]
-
     assert part1(sample) == 71
     ans1 = part1(problem)
     print(ans1)
     assert ans1 == 23925
 
-    #assert part2(sample2) == 175594
     ans2 = part2(problem)
     print(ans2)
-    assert ans2 == 1505722
+    assert ans2 == 964373157673
