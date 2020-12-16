@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
+from collections import defaultdict
 from functools import reduce
+import re
+
+pattern = re.compile(r"([a-z ]+): (\d+)-(\d+) or (\d+)-(\d+)")
 
 def is_valid(ticket, rules):
     for val in ticket:
@@ -13,45 +17,19 @@ def is_valid(ticket, rules):
             return val
     return None
 
-def part1(lines):
+def extract_rules(lines):
     rules = {}
-    i = 0
-    while i < len(lines) and len(lines[i]) > 0:
-        parts = lines[i].split(':')
-        ranges_str = parts[1].split(' or ')
-        rules[parts[0]] = []
-        for r in ranges_str:
-            start,end = [int(x) for x in r.split('-')]
-            rules[parts[0]].append((start, end))
-        i += 1
-    i += 5
-
-    s = 0
-    while i < len(lines):
-        v = is_valid([int(x) for x in lines[i].strip().split(',')], rules)
-        if v != None:
-            s += v
-        i += 1
-    return s
-
-def part2(lines):
-    rules = {}
-    i = 0
-    while i < len(lines):
-        line = lines[i].strip()
+    for line in lines:
         if len(line) == 0:
-            break
-        parts = line.split(':')
-        ranges_str = parts[1].split(' or ')
-        rules[parts[0]] = []
-        for r in ranges_str:
-            start,end = [int(x) for x in r.split('-')]
-            rules[parts[0]].append((start, end))
-        i += 1
+            return rules
+        name,a,b,c,d = pattern.match(line).group(1,2,3,4,5)
+        rules[name] = [(int(a),int(b)), (int(c),int(d))]
+    return rules
 
-    fields = {}
-    my = ""
-
+def extract_tickets(lines):
+    my = []
+    tickets = []
+    i = 0
     while i < len(lines) and "nearby tickets" not in lines[i]:
         if "your ticket" in lines[i]:
             i += 1
@@ -59,16 +37,31 @@ def part2(lines):
         i += 1
     i += 1
     while i < len(lines):
-        ticket = [int(x) for x in lines[i].strip().split(',')]
+        tickets.append([int(x) for x in lines[i].strip().split(',')])
+        i += 1
+    return my, tickets
+
+def part1(lines):
+    rules = extract_rules(lines)
+    _, tickets = extract_tickets(lines)
+    s = 0
+    for ticket in tickets:
+        v = is_valid(ticket, rules)
+        if v != None:
+            s += v
+    return s
+
+def part2(lines):
+    rules = extract_rules(lines)
+    fields = defaultdict(list)
+
+    my, tickets = extract_tickets(lines)
+    for ticket in tickets:
         if is_valid(ticket, rules) == None:
             for j,x in enumerate(ticket):
-                if j in fields:
-                    fields[j].append(x)
-                else:
-                    fields[j] = [x]
-        i += 1
+                fields[j].append(x)
 
-    mapping = {}
+    mapping = defaultdict(list)
     for i, field in fields.items():
         for name, rule in rules.items():
             success = True
@@ -80,10 +73,7 @@ def part2(lines):
                 if not val_suc:
                     success = False
             if success:
-                if name in mapping:
-                    mapping[name].append(i)
-                else:
-                    mapping[name] = [i]
+                mapping[name].append(i)
 
     final_mapping = {}
     while len(mapping.keys()) > 0:
@@ -97,7 +87,6 @@ def part2(lines):
                 del mapping[i]
                 break
 
-    s = 1
     return reduce(lambda x,y: x*y, [my[v] for k,v in final_mapping.items() if "departure" in k])
 
 
