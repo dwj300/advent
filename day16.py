@@ -1,19 +1,14 @@
 #!/usr/bin/env python3
 from collections import defaultdict
 from functools import reduce
+from copy import deepcopy
 import re
 
 pattern = re.compile(r"([a-z ]+): (\d+)-(\d+) or (\d+)-(\d+)")
 
 def is_valid(ticket, rules):
     for val in ticket:
-        found = False
-        for ranges in rules.values():
-            for r in ranges:
-                if val >= r[0] and val <= r[1]:
-                    found = True
-                    break
-        if not found:
+        if not any(map(lambda r: (val >= r[0][0] and val <= r[0][1]) or (val >= r[1][0] and val <= r[1][1]), rules.values())):
             return val
     return None
 
@@ -36,9 +31,8 @@ def extract_tickets(lines):
             my = [int(x) for x in lines[i].strip().split(',')]
         i += 1
     i += 1
-    while i < len(lines):
-        tickets.append([int(x) for x in lines[i].strip().split(',')])
-        i += 1
+    for line in lines[i:]:
+        tickets.append([int(x) for x in line.strip().split(',')])
     return my, tickets
 
 def part1(lines):
@@ -52,27 +46,15 @@ def part1(lines):
     return s
 
 def part2(lines):
-    rules = extract_rules(lines)
-    fields = defaultdict(list)
-
-    my, tickets = extract_tickets(lines)
-    for ticket in tickets:
-        if is_valid(ticket, rules) == None:
-            for j,x in enumerate(ticket):
-                fields[j].append(x)
-
     mapping = defaultdict(list)
+    rules = extract_rules(lines)
+    my, tickets = extract_tickets(lines)
+    valid_tickets = filter(lambda t: (is_valid(t, rules) == None), tickets)
+    fields = {idx: list(map(lambda t: t[idx], deepcopy(valid_tickets))) for idx in range(len(my))}
+
     for i, field in fields.items():
-        for name, rule in rules.items():
-            success = True
-            for val in field:
-                val_suc = False
-                for r in rule:
-                    if val >= r[0] and val <= r[1]:
-                        val_suc = True
-                if not val_suc:
-                    success = False
-            if success:
+        for name, r in rules.items():
+            if not any(map(lambda val: (val < r[0][0] or val > r[0][1]) and (val < r[1][0] or val > r[1][1]), field)):
                 mapping[name].append(i)
 
     final_mapping = {}
