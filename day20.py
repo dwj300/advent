@@ -2,6 +2,7 @@
 import numpy as np
 from math import sqrt
 from collections import defaultdict
+from utils import runner
 
 def check_tile(tiles, placement, i, j, name):
     cur = tiles[name]
@@ -27,7 +28,6 @@ def check_tile(tiles, placement, i, j, name):
     return True
 
 def arrange(placement, tiles, i, j, pairs, corners):
-    #print(sum([row.count(-1)]))
     if placement[j][i] != -1:
         i += 1
         if i == len(placement) and j == len(placement)-1:
@@ -62,36 +62,30 @@ def arrange(placement, tiles, i, j, pairs, corners):
     return False
 
 def parse(lines):
-    i = 0
     tiles = {}
+    pairs = defaultdict(list)
+    i = 0
     while i < len(lines):
         if "Tile" in lines[i]:
             tiles[int(lines[i].split(' ')[1][:-1])] = np.array([[char for char in line] for line in lines[i+1:i+11]])
             i += 12
-    pairs = defaultdict(list)
+
     for source_name, source in tiles.items():
-        count = 0
         for target_name, target in tiles.items():
             if source_name == target_name:
                 continue
-            s_top = source[0]
-            s_bottom = source[9]
-            s_left = source[:,0]
-            s_right = source[:,9]
+            look, sets = [source, target], [set(), set()]
+            for i in range(2):
+                for idx in (0,9):
+                    a = tuple(look[i][idx,:])
+                    b = tuple(look[i][:,idx])
+                    sets[i].add(a)
+                    sets[i].add(b)
+                    sets[i].add(tuple(reversed(a)))
+                    sets[i].add(tuple(reversed(b)))
 
-            t_top = target[0]
-            t_bottom = target[9]
-            t_left = target[:,0]
-            t_right = target[:,9]
-
-            s_borders = set([tuple(s_top), tuple(s_bottom), tuple(s_left), tuple(s_right),
-                            tuple(reversed(tuple(s_top))), tuple(reversed(tuple(s_bottom))), tuple(reversed(tuple(s_left))), tuple(reversed(tuple(s_right)))])
-            t_borders = set([tuple(t_top), tuple(t_bottom), tuple(t_left), tuple(t_right),
-                            tuple(reversed(tuple(t_top))), tuple(reversed(tuple(t_bottom))), tuple(reversed(tuple(t_left))), tuple(reversed(tuple(t_right)))])
-
-            if len(s_borders.intersection(t_borders)) > 0:
+            if len(sets[0].intersection(sets[1])) > 0:
                 pairs[source_name].append(target_name)
-                count += 1
     return tiles, pairs
 
 def part1(lines):
@@ -104,86 +98,32 @@ def part1(lines):
 
 def part2(lines):
     tiles, pairs = parse(lines)
-    #import pdb;pdb.set_trace()
     n = int(sqrt(len(tiles)))
     placement = [[-1 for _ in range(n)] for _ in range(n)]
+    corners = [k for k, v in pairs.items() if len(v) == 2]
+    if not arrange(placement, tiles, 0, 0, pairs, corners):
+        assert False
 
-    corners = []
-    for k, v in pairs.items():
-        if len(v) == 2:
-            corners.append(k)
+    # Remove borders
+    for r in placement:
+        for c in r:
+            for idx in (9, 0):
+                for axis in (1,0):
+                    tiles[c] = np.delete(tiles[c], (idx), axis=axis)
 
-    if arrange(placement, tiles, 0, 0, pairs, corners):
-        print("arrange succeeded")
-        #p = placement[0][0] * placement[0][n-1] * placement[n-1][0] * placement[n-1][n-1]
-        #return p
-    else:
-        print("arrange failed")
-        #return 0
-
-    #print(placement)
-    for i, r in enumerate(placement):
-        for j, c in enumerate(r):
-            #print(c)
-            #print("before")
-            #print(tiles[c])
-            #import pdb; pdb.set_trace()
-            #if j < n-1:
-            tiles[c] = np.delete(tiles[c], (9), axis=1)
-            #if i < n-1:
-            tiles[c] = np.delete(tiles[c], (9), axis=0)
-            #if j > 0:
-            tiles[c] = np.delete(tiles[c], (0), axis=1)
-            #if i > 0:
-            tiles[c] = np.delete(tiles[c], (0), axis=0)
-            #print("after")
-            #print(tiles[c])
-
-    picture = None
-    for r, row in enumerate(placement):
-        row_arr = None
-        for c, name in enumerate(row):
-            if row_arr is None:
-                row_arr = tiles[name]
-            else:
-                row_arr = np.concatenate((row_arr, tiles[name]), axis=1)
-        if picture is None:
-            picture = row_arr
-        else:
-            picture = np.concatenate((picture, row_arr), axis=0)
-
-    #for row in picture:
-        #print("".join(row))
-
-    x = 0
-    for row in picture:
-        for ch in row:
-            if ch == '#':
-                x += 1
-
-
-    #import pdb; pdb.set_trace()
+    picture = np.concatenate([np.concatenate([tiles[n] for n in row], axis=1) for row in placement], axis=0)
     for rotate in (0,1,2,3):
         for flip in (0,1,2):
-            print(f"rotating: {rotate} and flipping: {flip}")
             p2 = np.rot90(picture, rotate)
             if flip != 2:
                 p2 = np.flip(p2, flip)
-            #for row in picture:
-            #    print("".join(row))
             num = num_monsters(p2)
             if num > 0:
-                print(x - num*15)
-                return(x-num*15)
-
-
-    assert False
-    #print(picture)
+                return (picture == '#').sum() - num*15
+    return 0
 
 def num_monsters(picture):
-    monster = ["                  # ",
-               "#    ##    ##    ###",
-               " #  #  #  #  #  #   "]
+    monster = ["                  # ", "#    ##    ##    ###", " #  #  #  #  #  #   "]
     num = 0
     for i in range(picture.shape[0]-2):
         for j in range(picture.shape[0]-19):
@@ -202,12 +142,5 @@ if __name__ == "__main__":
     with open("day20_s.txt") as f:
         sample = [line.strip() for line in f.readlines()]
 
-    assert part1(sample) == 20899048083289
-    ans1 = part1(problem)
-    print(ans1)
-    assert ans1 == 63187742854073
-
-    assert part2(sample) == 273
-    ans2 = part2(problem)
-    print(ans2)
-    assert ans2 == 2152
+    runner(part1, sample, 20899048083289, problem, 63187742854073)
+    runner(part2, sample, 273, problem, 2152)
