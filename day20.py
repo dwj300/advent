@@ -11,20 +11,14 @@ def check_tile(tiles, placement, i, j, name):
             j+y >= 0 and j+y < len(placement) and \
             placement[j+y][i+x] != -1:
             neighbor = tiles[placement[j+y][i+x]]
-            if x == -1 and y == 0:
-                if tuple(cur[:,0]) != tuple(neighbor[:,9]):
-                    return False
-            elif x == 1 and y == 0:
-                if tuple(cur[:,9]) != tuple(neighbor[:,0]):
-                    return False
-            elif x == 0 and y == -1:
-                if tuple(cur[0]) != tuple(neighbor[9]):
-                    return False
-            elif x == 0 and y == 1:
-                if tuple(cur[9]) != tuple(neighbor[0]):
-                    return False
-            else:
-                assert False
+            if x == -1 and y == 0 and tuple(cur[:,0]) != tuple(neighbor[:,9]):
+                return False
+            elif x == 1 and y == 0 and tuple(cur[:,9]) != tuple(neighbor[:,0]):
+                return False
+            elif x == 0 and y == -1 and tuple(cur[0]) != tuple(neighbor[9]):
+                return False
+            elif x == 0 and y == 1 and tuple(cur[9]) != tuple(neighbor[0]):
+                return False
     return True
 
 def arrange(placement, tiles, i, j, pairs, corners):
@@ -122,17 +116,12 @@ def part2(lines):
                 return (picture == '#').sum() - num*15
     return 0
 
-def num_monsters(picture):
+def num_monsters(p):
     monster = ["                  # ", "#    ##    ##    ###", " #  #  #  #  #  #   "]
     num = 0
-    for i in range(picture.shape[0]-2):
-        for j in range(picture.shape[0]-19):
-            p = picture[i:i+3,j:j+20]
-            count = 0
-            for (ii, jj), ch in np.ndenumerate(p):
-                if monster[ii][jj] == '#' and ch == '#':
-                    count += 1
-            if count == 15:
+    for i in range(p.shape[0]-2):
+        for j in range(p.shape[0]-19):
+            if sum([monster[ii][jj] == '#' and ch == '#' for (ii, jj), ch in np.ndenumerate(p[i:i+3,j:j+20])]) == 15:
                 num += 1
     return num
 
