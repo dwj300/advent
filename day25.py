@@ -5,8 +5,7 @@ def compute(pub, subject):
     cur = 1
     loop = 0
     while cur != pub:
-        cur *= subject
-        cur = cur % 20201227
+        cur = (cur * subject) % 20201227
         loop += 1
     return loop
 
@@ -16,8 +15,7 @@ def part1(keys):
     door_loop = compute(door_pub, 7)
     cur = 1
     for _ in range(card_loop):
-        cur *= door_pub
-        cur = cur % 20201227
+        cur = (cur * door_pub) % 20201227
     return cur
 
 if __name__ == "__main__":
