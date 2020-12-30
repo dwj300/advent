@@ -3,7 +3,6 @@ from collections import defaultdict
 from functools import reduce
 from utils import runner
 
-from boltons.iterutils import first
 def parse(lines):
     possible = defaultdict(list)
     ing = defaultdict(int)
@@ -29,7 +28,7 @@ def part2(lines):
     bad = { k: set.intersection(*[set(a) for a in v]) for (k,v) in possible.items() }
 
     while bad:
-        solved = first(bad, key=lambda a: len(bad[a]) == 1)
+        solved = next(k for (k,v) in bad.items() if len(v) == 1)
         mapping[solved] = bad[solved].pop()
         for v in bad.values():
             v.discard(mapping[solved])

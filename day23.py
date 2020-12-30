@@ -8,7 +8,7 @@ class Node():
         self.next = None
 
 def part1(line):
-    start = [int(c) for c in line]
+    start = [int(c) for c in line[0]]
     one = play(start, 100, max(start))
     res = ""
     tmp = one.next
@@ -18,7 +18,7 @@ def part1(line):
     return res
 
 def part2(line):
-    start = [int(c) for c in line]
+    start = [int(c) for c in line[0]]
     one = play(start, 10000000, 1000000)
     return one.next.val * one.next.next.val
 
@@ -56,7 +56,7 @@ def play(start, rounds, MAX):
     return mapping[1]
 
 if __name__ == "__main__":
-    sample = "389125467"
-    problem = "872495136"
+    sample = ["389125467"]
+    problem = ["872495136"]
     runner(part1, sample, "67384529", problem, "27865934")
     runner(part2, sample, 149245887792, problem, 170836011000)

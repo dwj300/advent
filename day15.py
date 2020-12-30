@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
-
-def part1(nums, count):
+def part1(nums, count=2020):
     spoken = {}
     prev = 0
     for i,num in enumerate(nums):
@@ -20,6 +19,8 @@ def part1(nums, count):
         prev = speak
     return prev
 
+def part2(nums):
+    return part1(nums, 30000000)
 
 if __name__ == "__main__":
     sample = [0,3,6]
@@ -30,7 +31,7 @@ if __name__ == "__main__":
     print(ans1)
     assert ans1 == 289
 
-    assert part1(sample, 30000000) == 175594
-    ans2 = part1(problem, 30000000)
+    assert part2(sample) == 175594
+    ans2 = part2(problem)
     print(ans2)
     assert ans2 == 1505722

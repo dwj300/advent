@@ -10,15 +10,15 @@ def check(nums, target):
             return True
     return False
 
-
-def part1(nums, pre):
+def part1(nums, pre=25):
+    nums = list(map(int, nums))
     for i in range(pre, len(nums)):
         if not check(nums[i-pre:i], nums[i]):
             return nums[i]
     return -1
 
-
-def part2(nums, target):
+def part2(nums, target=27911108):
+    nums = list(map(int, nums))
     i, j, s = 0, 0, nums[0]
     while s != target and j < len(nums):
         if s < target:
@@ -29,10 +29,9 @@ def part2(nums, target):
             i += 1
     return min(nums[i:j+1]) + max(nums[i:j+1])
 
-
 if __name__ == "__main__":
     with open("day9.txt") as f:
-        problem = [int(line.strip()) for line in f.readlines()]
+        problem = [line.strip() for line in f.readlines()]
 
     sample1 = """35
 20
@@ -54,13 +53,13 @@ if __name__ == "__main__":
 277
 309
 576""".split('\n')
-    sample = [int(x.strip()) for x in sample1]
+    sample = [x.strip() for x in sample1]
     assert part1(sample, 5) == 127
-    ans1 = part1(problem, 25)
+    ans1 = part1(problem)
     print(ans1)
     assert ans1 == 27911108
 
     assert part2(sample, 127) == 62
-    ans2 = part2(problem, 27911108)
+    ans2 = part2(problem)
     print(ans2)
     assert ans2 == 4023754

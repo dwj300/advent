@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-
 def occupied(seats, r, c, search):
     count = 0
     for i in range(-1,2):
@@ -17,8 +16,7 @@ def occupied(seats, r, c, search):
                 count += 1
     return count
 
-
-def part1(seats, search, num):
+def part1(seats, search=False, num=4):
     old = None
     new = [[x for x in seat] for seat in seats]
     while new != old:
@@ -32,6 +30,8 @@ def part1(seats, search, num):
                 new[r][c] = seat
     return sum([row.count('#') for row in new])
 
+def part2(seats):
+    return part1(seats, True, 5)
 
 if __name__ == "__main__":
     with open("day11.txt") as f:
@@ -49,12 +49,12 @@ L.LLLLLL.L
 L.LLLLL.LL""".split('\n')
 
     sample = [[char for char in word] for word in sample]
-    assert part1(sample, False, 4) == 37
-    ans1 = part1(problem, False, 4)
+    assert part1(sample) == 37
+    ans1 = part1(problem)
     print(ans1)
     assert ans1 == 2406
 
-    assert part1(sample, True, 5) == 26
-    ans2 = part1(problem, True, 5)
+    assert part2(sample) == 26
+    ans2 = part2(problem)
     print(ans2)
     assert ans2 == 2149

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import re
 
-
 def part1(lines):
     a = 0
     seen = set()
@@ -15,7 +14,6 @@ def part1(lines):
             i += int(parts[1])-1
         i += 1
     return a
-
 
 def part2(lines):
     for j in range(len(lines)):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from collections import defaultdict
 
-def part1(lines, w_range):
+def part1(lines, w_range=range(1)):
     lines = [line.strip() for line in lines]
     active = set()
     for x, line in enumerate(lines):
@@ -32,6 +32,9 @@ def part1(lines, w_range):
 
     return len(active)
 
+def part2(lines):
+    return part1(lines, range(-1,2))
+
 if __name__ == "__main__":
     with open("day17.txt") as f:
         problem = [line.strip() for line in f.readlines()]
@@ -39,13 +42,13 @@ if __name__ == "__main__":
     sample = """.#.
 ..#
 ###""".split('\n')
-    assert part1(sample, range(1)) == 112
-    ans1 = part1(problem, range(1))
+    assert part1(sample) == 112
+    ans1 = part1(problem)
     print(ans1)
     assert ans1 == 289
 
-    p2s = part1(sample, range(-1,2))
+    p2s = part2(sample)
     assert p2s == 848
-    ans2 = part1(problem, range(-1,2))
+    ans2 = part2(problem)
     print(ans2)
     assert ans2 == 2084

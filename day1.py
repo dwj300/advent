@@ -1,22 +1,24 @@
 #!/usr/bin/env python3
 from utils import runner
 
-def part1(input):
+def part1(lines):
+    lines = list(map(int, lines))
     parts = {}
-    for i in input:
+    for i in lines:
         parts[2020-i] = i
 
-    for i in input:
+    for i in lines:
         if i in parts:
             return parts[i] * i
     return -1
 
-def part2(input):
+def part2(lines):
+    lines = list(map(int, lines))
     parts = {}
-    for i in input:
+    for i in lines:
         parts[2020-i] = i
-    for i, a in enumerate(input):
-        for j, b in enumerate(input):
+    for i, a in enumerate(lines):
+        for j, b in enumerate(lines):
             if i == j:
                 continue
             s = a + b
