@@ -5,7 +5,7 @@ def parse_boards(lines):
     i = 2
     boards = []
     while i < len(lines):
-        board = [[int(r) for r in row.replace('  ', ' ').split(' ')] for row in lines[i:i+5]]
+        board = [[int(r) for r in row.replace('  ', ' ').split(' ')] for row in lines[i:i + 5]]
         boards.append(board)
         i += 6
     return nums, boards
@@ -50,7 +50,6 @@ def part2(nums, boards):
     while len(board_idx) > 0:
         boards = mark_cells(boards, nums[n])
         for b in board_idx:
-            
             if check_board(boards[b]):
                 if len(board_idx) > 1:
                     board_idx.remove(b)
