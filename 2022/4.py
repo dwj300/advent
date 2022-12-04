@@ -18,9 +18,7 @@ def part1(lines):
 def part2(lines):
     def overlaps(parts):
         p1s, p1e, p2s, p2e = parts
-        p1s = set(range(p1s, p1e+1))
-        p2s = set(range(p2s, p2e+1))
-        return len(p1s.intersection(p2s)) > 0
+        return not (p1e < p2s or p2e < p1s)
     return len(list(filter(overlaps, lines)))
 
 if __name__ == "__main__":
