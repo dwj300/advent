@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import re
 import sys
-from collections import defaultdict
 
 def parse(line):
     p1, p2 = line.split(',')

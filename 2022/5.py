@@ -12,9 +12,7 @@ def parse(lines):
             stacks.append([])
             for row in grid:
                 if row[j] != ' ':
-                    stacks[int(x)-1].append(row[j])
-    for ss in range(len(stacks)):
-        stacks[ss] = list(reversed(stacks[ss]))
+                    stacks[int(x)-1].insert(0, row[j])
     i += 1
     r = re.compile(r'move ([0-9]+) from ([0-9]) to ([0-9])')
     def extract(line):
@@ -38,6 +36,5 @@ if __name__ == "__main__":
     day = re.match("(?:./)?([0-9]+).py", sys.argv[0]).groups()[0]
     filename = sys.argv[1] if len(sys.argv) > 1 else f"{day}.txt"
     lines = open(filename).read().split('\n')
-    stacks, moves = parse(lines)
     print(move(lines, True))
     print(move(lines, False))
