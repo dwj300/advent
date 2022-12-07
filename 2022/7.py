@@ -4,9 +4,9 @@ import sys
 from collections import defaultdict
 
 class Node(object):
-    def __init__(self, name, parent, size=0):
-        self.parent = parent
+    def __init__(self, name, parent, size):
         self.name = name
+        self.parent = parent
         self.size = size
         self.children = {}
 
@@ -17,30 +17,23 @@ def total_dirs(cur):
     return cur.size
 
 def create_tree(lines):
-    i = 1
-    root = Node("/", None)
+    root = Node("/", None, 0)
     cur = root
-    while i < len(lines):
-        # handle ls
-        if lines[i] == "$ ls":
-            i += 1
-            while i < len(lines) and "$" not in lines[i]:
-                size, name = lines[i].split(' ')
-                if size == "dir":
-                    cur.children[name] = Node(name, cur)
-                else:
-                    cur.children[name] = Node(name, cur, int(size))
-                i += 1
-            i -= 1
-        else:
-            assert "$ cd " in lines[i]
-            parts = lines[i].split(' ')
-            path = parts[-1]
-            if path != "..":
-                cur = cur.children[path]
-            elif path == ".." and cur.parent != None:
-                cur = cur.parent
-        i += 1
+    for line in lines[1:]:
+        parts = line.split(' ')
+        if parts[1] == "ls":
+            continue
+        if parts[0] != '$':
+            size = int(parts[0]) if parts[0].isdigit() else 0
+            cur.children[parts[1]] = Node(parts[1], cur, size)
+            continue
+        assert parts[1] == "cd"
+        path = parts[2]
+        if path != "..":
+            cur = cur.children[path]
+            continue
+        if cur.parent != None:
+            cur = cur.parent
     total_dirs(root)
     return root
 
@@ -65,7 +58,6 @@ def part2(root):
         if len(cur.children) > 0 and cur.size >= need:
             m = min(cur.size, m)
         q.extend(cur.children.values())
-
     assert m == 545729
     return m
 
