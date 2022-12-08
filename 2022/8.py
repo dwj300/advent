@@ -4,41 +4,29 @@ import sys
 from collections import defaultdict
 
 def part1(grid):
-    m, n = len(grid), len(grid[0])
-    visible = [[False for _ in range(len(grid[0]))] for _ in range(len(grid))]    
+    m, n = len(grid)-1, len(grid[0])-1
+    visible = [[False for _ in range(n+1)] for _ in range(m+1)]
 
-
-
-    # left to right
-    for r in range(m):
-        prev = -1
-        for c in range(0, n-1):
-            if grid[r][c] > prev:    
-                visible[r][c] = True
-            prev = max(prev, grid[r][c])
-    # right to left
-    for r in range(m):
-        prev = -1
-        for c in range(n-1, 0, -1):
-            if grid[r][c] > prev:
-                visible[r][c] = True
-            prev = max(prev, grid[r][c])
+    # left to right and right to left
+    X = ((0, n, 1), (n, 0, -1))
+    for r in range(m+1):
+        for s, e, d in X:
+            prev = -1
+            for c in range(s, e, d):
+                if grid[r][c] > prev:    
+                    visible[r][c] = True
+                prev = max(prev, grid[r][c])
     
-    # top to bottom
-    for c in range(n):
+    # top to bottom and bottom to top
+    Y = ((0, m, 1), (m, 0, -1))
+    for c in range(n+1):
         prev = -1
-        for r in range(0, m-1):
-            if grid[r][c] > prev:
-                visible[r][c] = True
-            prev = max(prev, grid[r][c])
-
-    # bottom to top
-    for c in range(n):
-        prev = -1
-        for r in range(m-1, 0, -1):
-            if grid[r][c] > prev:
-                visible[r][c] = True
-            prev = max(prev, grid[r][c])
+        for s, e, d in Y:
+            prev = -1
+            for r in range(s, e, d):
+                if grid[r][c] > prev:
+                    visible[r][c] = True
+                prev = max(prev, grid[r][c])
 
     v = sum([len(list(filter(lambda x: x, r))) for r in visible])
     assert v == 1794
