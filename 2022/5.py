@@ -35,6 +35,6 @@ def move(lines, reverse):
 if __name__ == "__main__":
     day = re.match("(?:./)?([0-9]+).py", sys.argv[0]).groups()[0]
     filename = sys.argv[1] if len(sys.argv) > 1 else f"{day}.txt"
-    lines = open(filename).read().split('\n')
+    lines = open(filename).read().strip().split('\n')
     print(move(lines, True))
     print(move(lines, False))
